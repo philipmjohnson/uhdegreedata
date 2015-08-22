@@ -23,7 +23,14 @@ var testdata = uhdata.slice(0, 2).concat(_.find(uhdata, isHawaiian));
  * @returns The total of the accumulator and the awards in this record.
  */
 function addDegrees(memo, record) {
+  if (isNaN(record["AWARDS"])) {
+    throw new Error("AWARDS field has non-numeric value");
+  }
   return memo + record["AWARDS"];
+}
+
+function hasAwards(record) {
+  return record.hasOwnProperty("AWARDS");
 }
 
 /**
@@ -32,6 +39,9 @@ function addDegrees(memo, record) {
  * @returns The total number of degress.
  */
 function totalDegrees(data) {
+  if (!_.every(data, hasAwards)) {
+    throw new Error("AWARDS field missing");
+  }
   return _.reduce(data, addDegrees, 0);
 }
 
